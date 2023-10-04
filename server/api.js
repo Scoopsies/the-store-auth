@@ -3,6 +3,7 @@ const {
   fetchOrders,
   fetchLineItems,
   createLineItem,
+  createUser,
   updateLineItem,
   deleteLineItem,
   updateOrder,
@@ -44,6 +45,15 @@ app.post('/login', async(req, res, next)=> {
     next(ex);
   }
 });
+
+app.post('/newUser', async(req, res, next) => {
+  try {
+    console.log(req.body)
+    res.send(await createUser(req.body))
+  } catch (error) {
+    next(error)
+  }
+})
 
 
 app.get('/me', isLoggedIn, (req, res, next)=> {
@@ -126,5 +136,6 @@ app.delete('/lineItems/:id', isLoggedIn, async(req, res, next)=> {
     next(ex);
   }
 });
+
 
 module.exports = app;

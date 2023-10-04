@@ -154,9 +154,12 @@ const deleteLineItem = async(lineItem)=> {
 
 const updateOrder = async(order)=> {
   const SQL = `
-    UPDATE orders SET is_cart = $1 WHERE id = $2 RETURNING *
+    UPDATE orders SET is_cart = $1,
+    address = $3
+    WHERE id = $2 
+    RETURNING *
   `;
-  const response = await client.query(SQL, [order.is_cart, order.id]);
+  const response = await client.query(SQL, [order.is_cart, order.id, order.address]);
   return response.rows[0];
 };
 
@@ -205,7 +208,8 @@ const seed = async()=> {
       id UUID PRIMARY KEY,
       created_at TIMESTAMP DEFAULT now(),
       is_cart BOOLEAN NOT NULL DEFAULT true,
-      user_id UUID REFERENCES users(id) NOT NULL
+      user_id UUID REFERENCES users(id) NOT NULL,
+      address VARCHAR(50)
     );
 
     CREATE TABLE line_items(
@@ -246,6 +250,7 @@ module.exports = {
   fetchOrders,
   fetchLineItems,
   createLineItem,
+  createUser,
   updateLineItem,
   deleteLineItem,
   updateOrder,

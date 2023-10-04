@@ -10,7 +10,7 @@ const Orders = ({ orders, products, lineItems })=> {
             const orderLineItems = lineItems.filter(lineItem => lineItem.order_id === order.id);
             return (
               <li key={ order.id }>
-                ({ new Date(order.created_at).toLocaleString() })
+                ({ new Date(order.created_at).toLocaleString()})
                 <ul>
                   {
                     orderLineItems.map( lineItem => {
@@ -23,6 +23,7 @@ const Orders = ({ orders, products, lineItems })=> {
                     })
                   }
                 </ul>
+                {`Address: ${order.address}`}
               </li>
             );
           })

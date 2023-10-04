@@ -116,6 +116,10 @@ const App = ()=> {
     setAuth({});
   }
 
+  const createNewUser = async (json) => {
+    const response = await axios.post('/api/newUser', json);
+  }
+
   return (
     <div>
       {
@@ -154,7 +158,8 @@ const App = ()=> {
             </>
         ):(
           <div>
-            <Login login={ login }/>
+            <Login login={ login }
+            createNewUser={createNewUser}/>
             <Products
               products={ products }
               cartItems = { cartItems }

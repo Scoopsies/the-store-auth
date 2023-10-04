@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Login = ({ login })=> {
+const Login = ({ login, createNewUser })=> {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -8,6 +8,17 @@ const Login = ({ login })=> {
     ev.preventDefault();
     login({ username, password });
   }
+
+  const create = async () => {
+    const json = {
+      username: username,
+      password: password,
+      is_admin: false
+    }
+    await createNewUser(json)
+    await login({username, password})
+  }
+  
   return (
     <form onSubmit={ _login }>
       <input
@@ -22,6 +33,9 @@ const Login = ({ login })=> {
         onChange={ ev => setPassword(ev.target.value)}
       />
       <button disabled={!username || !password}>Login</button>
+      <button type='button' 
+      disabled={!username || !password}
+      onClick={() => create()}>Create new account</button>
     </form>
   );
 }

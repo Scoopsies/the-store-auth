@@ -9,8 +9,8 @@
 # features
 
 - [ ] a user should see an error message for an incorrect login 
-- [ ] a product should have an out_of_stock property which is a BOOLEAN 
-- [ ] a user should not be able to add an out of stock product totheir their cart (add to cart) should be disabled
+- [x] a product should have an out_of_stock property which is a BOOLEAN 
+- [x] a user should not be able to add an out of stock product totheir their cart (add to cart) should be disabled
 - [x] a user should be able to create an account (add a form below the login form)
 - [x] an order should have an address. A user will need to add an address before they create an order.
 - [x] the address should be displayed next to their orders.

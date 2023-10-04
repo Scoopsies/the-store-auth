@@ -6,7 +6,12 @@ const Login = ({ login, createNewUser })=> {
 
   const _login = (ev)=> {
     ev.preventDefault();
-    login({ username, password });
+
+    try {
+      login({ username, password });
+    } catch (error) {
+      setError
+    }
   }
 
   const create = async () => {

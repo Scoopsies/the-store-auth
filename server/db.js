@@ -92,9 +92,9 @@ const createUser = async(user)=> {
 
 const createProduct = async(product)=> {
   const SQL = `
-    INSERT INTO products (id, name) VALUES($1, $2) RETURNING *
+    INSERT INTO products (id, name, out_of_stock) VALUES($1, $2, $3) RETURNING *
   `;
-  const response = await client.query(SQL, [ uuidv4(), product.name]);
+  const response = await client.query(SQL, [ uuidv4(), product.name, product.out_of_stock]);
   return response.rows[0];
 };
 
@@ -201,7 +201,8 @@ const seed = async()=> {
     CREATE TABLE products(
       id UUID PRIMARY KEY,
       created_at TIMESTAMP DEFAULT now(),
-      name VARCHAR(100) UNIQUE NOT NULL
+      name VARCHAR(100) UNIQUE NOT NULL,
+      out_of_stock BOOLEAN DEFAULT false NOT NULL
     );
 
     CREATE TABLE orders(
@@ -209,7 +210,7 @@ const seed = async()=> {
       created_at TIMESTAMP DEFAULT now(),
       is_cart BOOLEAN NOT NULL DEFAULT true,
       user_id UUID REFERENCES users(id) NOT NULL,
-      address VARCHAR(50)
+      address VARCHAR(50) DEFAULT 'Earth' NOT NULL
     );
 
     CREATE TABLE line_items(
@@ -230,10 +231,10 @@ const seed = async()=> {
     createUser({ username: 'ethyl', password: '1234', is_admin: true})
   ]);
   const [foo, bar, bazz] = await Promise.all([
-    createProduct({ name: 'foo' }),
-    createProduct({ name: 'bar' }),
-    createProduct({ name: 'bazz' }),
-    createProduct({ name: 'quq' }),
+    createProduct({ name: 'foo', out_of_stock: false }),
+    createProduct({ name: 'bar', out_of_stock: false }),
+    createProduct({ name: 'bazz', out_of_stock: true }),
+    createProduct({ name: 'quq',out_of_stock: false }),
   ]);
   let orders = await fetchOrders(ethyl.id);
   let cart = orders.find(order => order.is_cart);

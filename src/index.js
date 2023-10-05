@@ -12,6 +12,8 @@ const App = ()=> {
   const [orders, setOrders] = useState([]);
   const [lineItems, setLineItems] = useState([]);
   const [auth, setAuth] = useState({});
+  const [favorites, setFavorites] = useState([]);
+
 
   const getHeaders = ()=> {
     return {
@@ -44,6 +46,14 @@ const App = ()=> {
     const fetchData = async()=> {
       const response = await axios.get('/api/products');
       setProducts(response.data);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(()=> {
+    const fetchData = async()=> {
+      const response = await axios.get('/api/favorites');
+      setFavorites(response.data);
     };
     fetchData();
   }, []);
@@ -120,6 +130,16 @@ const App = ()=> {
     const response = await axios.post('/api/newUser', json);
   }
 
+  const createFavorite = async (json) => {
+    const response = await axios.post('/api/favorites', json);
+    setFavorites([...favorites, response.data])
+  }
+  
+  const deleteFavorite = async (id) => {
+    const response = await axios.delete(`/api/favorites/${id}`, getHeaders());
+    setFavorites(favorites.filter(item => item.id !== id))
+  }
+
   return (
     <div>
       {
@@ -136,11 +156,14 @@ const App = ()=> {
             </nav>
             <main>
               <Products
-                auth = { auth }
                 products={ products }
                 cartItems = { cartItems }
                 createLineItem = { createLineItem }
                 updateLineItem = { updateLineItem }
+                createFavorite = {createFavorite}
+                auth = { auth }
+                favorites = {favorites}
+                deleteFavorite = {deleteFavorite}
               />
               <Cart
                 cart = { cart }
@@ -165,7 +188,10 @@ const App = ()=> {
               cartItems = { cartItems }
               createLineItem = { createLineItem }
               updateLineItem = { updateLineItem }
+              createFavorite = {createFavorite}
               auth = { auth }
+              favorites = {favorites}
+              deleteFavorite = {deleteFavorite}
             />
           </div>
         )

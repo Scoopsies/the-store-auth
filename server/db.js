@@ -152,6 +152,14 @@ const deleteLineItem = async(lineItem)=> {
   await client.query(SQL, [lineItem.id]);
 };
 
+const deleteFavorite = async(id)=> {
+  const SQL = `
+    DELETE from favorites
+    WHERE id = $1
+  `;
+  await client.query(SQL, [id]);
+};
+
 const updateOrder = async(order)=> {
   const SQL = `
     UPDATE orders SET is_cart = $1,
@@ -178,13 +186,30 @@ const fetchOrders = async(userId)=> {
     ); 
     response = await client.query(SQL, [ userId ]);
     return response.rows;
-    //return fetchOrders(userId);
+    // return fetchOrders(userId);
   }
   return response.rows;
 };
 
+const fetchFavorites = async() => {
+  const SQL = `
+  SELECT * FROM favorites
+  `
+  const response = await client.query(SQL);
+  return response.rows
+}
+
+const createFavorite = async(json) => {
+  const SQL =`
+    INSERT INTO favorites(id, product_id, user_id) VALUES($1, $2, $3) RETURNING *
+  `
+  const response = await client.query(SQL, [uuidv4(), json.product_id, json.user_id]);
+  return response.rows[0]
+}
+
 const seed = async()=> {
   const SQL = `
+    DROP TABLE IF EXISTS favorites;
     DROP TABLE IF EXISTS line_items;
     DROP TABLE IF EXISTS products;
     DROP TABLE IF EXISTS orders;
@@ -222,6 +247,13 @@ const seed = async()=> {
       CONSTRAINT product_and_order_key UNIQUE(product_id, order_id)
     );
 
+    CREATE TABLE favorites(
+      id UUID PRIMARY KEY,
+      product_id UUID REFERENCES products(id) NOT NULL,
+      user_id UUID REFERENCES users(id) NOT NULL,
+      CONSTRAINT product_and_user_key UNIQUE(product_id, user_id)
+    );
+
   `;
   await client.query(SQL);
 
@@ -252,11 +284,14 @@ module.exports = {
   fetchLineItems,
   createLineItem,
   createUser,
+  createFavorite,
   updateLineItem,
   deleteLineItem,
   updateOrder,
   authenticate,
   findUserByToken,
   seed,
+  fetchFavorites,
+  deleteFavorite,
   client
 };

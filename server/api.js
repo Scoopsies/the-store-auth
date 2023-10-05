@@ -4,11 +4,14 @@ const {
   fetchLineItems,
   createLineItem,
   createUser,
+  createFavorite,
   updateLineItem,
   deleteLineItem,
+  deleteFavorite,
   updateOrder,
   authenticate,
-  findUserByToken
+  findUserByToken,
+  fetchFavorites
 } = require('./db');
 
 const express = require('express');
@@ -48,7 +51,6 @@ app.post('/login', async(req, res, next)=> {
 
 app.post('/newUser', async(req, res, next) => {
   try {
-    console.log(req.body)
     res.send(await createUser(req.body))
   } catch (error) {
     next(error)
@@ -136,5 +138,33 @@ app.delete('/lineItems/:id', isLoggedIn, async(req, res, next)=> {
     next(ex);
   }
 });
+
+app.delete('/favorites/:id', isLoggedIn, async(req, res, next)=> {
+  try {
+    await deleteFavorite(req.params.id);
+    res.sendStatus(204);
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
+app.get('/favorites', async (req, res, next) => {
+  try {
+    res.send(await fetchFavorites())
+  } catch (error) {
+    next(error)
+  }
+})
+
+app.post('/favorites', async(req, res, next) => {
+  try {
+
+    res.send(await createFavorite(req.body))
+  } catch (error) {
+    next(error)
+  }
+})
+
 
 module.exports = app;

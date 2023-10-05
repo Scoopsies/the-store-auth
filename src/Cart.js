@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-const Cart = ({ updateOrder, removeFromCart, lineItems, cart, products })=> {
+const Cart = ({ updateOrder, removeFromCart, lineItems, cart, products, auth })=> {
   const [address, setAddress] = useState('')
   return (
     <div>
@@ -9,11 +9,10 @@ const Cart = ({ updateOrder, removeFromCart, lineItems, cart, products })=> {
         {
           lineItems.filter(lineItem=> lineItem.order_id === cart.id).map( lineItem => {
             const product = products.find(product => product.id === lineItem.product_id) || {};
-            console.log(product)
             return (
               <li key={ lineItem.id }>
                 { product.name }
-                ({ lineItem.quantity })
+                {` (${lineItem.quantity}) `}
                 <button onClick={ ()=> removeFromCart(lineItem)}>Remove From Cart</button>
               </li>
             );

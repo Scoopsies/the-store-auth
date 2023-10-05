@@ -38,7 +38,7 @@ const Products = ({ products, cartItems, createLineItem, updateLineItem, createF
                 { product.name }
                 {
                   auth.id ? (
-                    cartItem ? <button onClick={ ()=> updateLineItem(cartItem)}>Add Another</button>: <button disabled={product.out_of_stock} onClick={ ()=> createLineItem(product)}>{product.out_of_stock ? 'out of stock' : 'add'}</button>
+                    cartItem ? <button onClick={ ()=> updateLineItem(cartItem)}>Add Another</button>: <button disabled={product.out_of_stock} onClick={ ()=> {createLineItem(product)}}>{product.out_of_stock ? 'out of stock' : 'add'}</button>
                   ): null 
                 }
                 {

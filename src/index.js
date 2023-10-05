@@ -14,6 +14,8 @@ const App = ()=> {
   const [auth, setAuth] = useState({});
   const [favorites, setFavorites] = useState([]);
 
+  
+
 
   const getHeaders = ()=> {
     return {
@@ -80,16 +82,19 @@ const App = ()=> {
 
 
   const createLineItem = async(product)=> {
+    const quantity = auth.is_member ? 2 : 1
     const response = await axios.post('/api/lineItems', {
       order_id: cart.id,
-      product_id: product.id
+      product_id: product.id,
+      quantity: quantity
     }, getHeaders());
     setLineItems([...lineItems, response.data]);
   };
 
   const updateLineItem = async(lineItem)=> {
+    const quantity =  auth.is_member ? lineItem.quantity + 2 : lineItem.quantity + 1
     const response = await axios.put(`/api/lineItems/${lineItem.id}`, {
-      quantity: lineItem.quantity + 1,
+      quantity: quantity,
       order_id: cart.id
     }, getHeaders());
     setLineItems(lineItems.map( lineItem => lineItem.id == response.data.id ? response.data: lineItem));
@@ -150,7 +155,7 @@ const App = ()=> {
               <Link to='/orders'>Orders ({ orders.filter(order => !order.is_cart).length })</Link>
               <Link to='/cart'>Cart ({ cartCount })</Link>
               <span>
-                Welcome { auth.username }!
+                Welcome { auth.username }! {auth.is_member ? 'Thanks for being a member' : ''}!
                 <button onClick={ logout }>Logout</button>
               </span>
             </nav>
@@ -171,6 +176,7 @@ const App = ()=> {
                 products = { products }
                 updateOrder = { updateOrder }
                 removeFromCart = { removeFromCart }
+                auth = {auth}
               />
               <Orders
                 orders = { orders }
